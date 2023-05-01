@@ -1,0 +1,9 @@
+query LocationList {
+    locations {
+        results {
+            id
+            name
+            dimension
+        }
+    }
+}
