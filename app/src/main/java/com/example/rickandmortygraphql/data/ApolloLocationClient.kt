@@ -1,6 +1,7 @@
 package com.example.rickandmortygraphql.data
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.Optional
 import com.example.rickandmortygraphql.LocationListQuery
 import com.example.rickandmortygraphql.LocationQuery
 import com.example.rickandmortygraphql.domain.locations.LocationClient
@@ -11,8 +12,9 @@ import javax.inject.Inject
 class ApolloLocationClient @Inject constructor(
     private val apolloClient: ApolloClient
 ): LocationClient{
-    override suspend fun getLocations(): List<LocationsList> {
-        return apolloClient.query(LocationListQuery())
+    override suspend fun getLocations(page: Int?): List<LocationsList> {
+        return apolloClient
+            .query(LocationListQuery(Optional.present(page)))
             .execute()
             .data
             ?.locations

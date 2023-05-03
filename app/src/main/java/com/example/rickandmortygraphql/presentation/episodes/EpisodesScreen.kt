@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
@@ -21,6 +22,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemContentType
+import androidx.paging.compose.itemKey
+import androidx.paging.compose.items
 import com.example.rickandmortygraphql.domain.episodes.EpisodeList
 import com.example.rickandmortygraphql.presentation.navigation.Screen
 
@@ -29,7 +34,7 @@ fun EpisodesScreen(
     navHostController: NavHostController,
     episodesViewModel: EpisodesViewModel = hiltViewModel()
 ) {
-    val episodes = episodesViewModel.episodes.collectAsState()
+    val episodes = episodesViewModel.episodes().collectAsLazyPagingItems()
 
     Column(
         modifier = Modifier
@@ -47,37 +52,30 @@ fun EpisodesScreen(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
         )
-        when(episodes.value){
-            is EpisodesState.Loading -> {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .size(100.dp)
-                        .padding(vertical = 200.dp)
-                        .align(Alignment.CenterHorizontally),
-                    color = Color.White
+        LazyColumn(
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .weight(1f)
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            contentPadding = PaddingValues(vertical = 16.dp)
+        ) {
+            items(
+                count = episodes.itemCount,
+                key = episodes.itemKey(),
+                contentType = episodes.itemContentType(
                 )
-            }
-            is EpisodesState.Success -> {
-                LazyColumn(
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .weight(1f)
-                        .fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    contentPadding = PaddingValues(vertical = 16.dp)
-                ){
-                    items(
-                        (episodes.value as EpisodesState.Success).episodes
-                    ){episodes ->
-                        EpisodeCard(
-                            episode = episodes,
-                            onItemClick = {
-                                navHostController.navigate(
-                                    Screen.EpisodeDetailScreen.route + "/${episodes.id}"
-                                )
-                            }
-                        )
-                    }
+            ) { index ->
+                val item = episodes[index]
+                if (item != null) {
+                    EpisodeCard(
+                        episode = item,
+                        onItemClick = {
+                            navHostController.navigate(
+                                Screen.EpisodeDetailScreen.route + "/${item.id}"
+                            )
+                        }
+                    )
                 }
             }
         }
@@ -102,7 +100,7 @@ fun EpisodeCard(
                 color = Color.White
             )
             .padding(8.dp)
-    ){
+    ) {
         Text(
             text = episode.name,
             style = TextStyle(

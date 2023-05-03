@@ -7,6 +7,10 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import javax.inject.Singleton
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.cache.normalized.FetchPolicy
+import com.apollographql.apollo3.cache.normalized.fetchPolicy
+import com.apollographql.apollo3.cache.normalized.normalizedCache
+import com.apollographql.apollo3.cache.normalized.sql.SqlNormalizedCacheFactory
 import com.apollographql.apollo3.network.okHttpClient
 import com.example.rickandmortygraphql.data.ApolloCharacterClient
 import com.example.rickandmortygraphql.data.ApolloEpisodeClient
@@ -45,8 +49,12 @@ object ApolloClient {
     @Provides
     @Singleton
     fun provideApolloClient(okHttpClient: OkHttpClient): ApolloClient{
+        val sqlNormalizedCacheFactory = SqlNormalizedCacheFactory("rick_and_morty.db")
+
         return ApolloClient.Builder()
             .serverUrl("https://rickandmortyapi.com/graphql")
+            .normalizedCache(sqlNormalizedCacheFactory)
+            .fetchPolicy(FetchPolicy.CacheFirst)
             .okHttpClient(okHttpClient)
             .build()
     }

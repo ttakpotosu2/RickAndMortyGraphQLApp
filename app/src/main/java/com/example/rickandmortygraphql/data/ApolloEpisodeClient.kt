@@ -1,6 +1,7 @@
 package com.example.rickandmortygraphql.data
 
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.Optional
 import com.example.rickandmortygraphql.EpisodeQuery
 import com.example.rickandmortygraphql.EpisodesQuery
 import com.example.rickandmortygraphql.domain.episodes.EpisodeClient
@@ -11,9 +12,9 @@ import javax.inject.Inject
 class ApolloEpisodeClient @Inject constructor(
     private val apolloClient: ApolloClient
 ): EpisodeClient {
-    override suspend fun getEpisodes(): List<EpisodeList> {
+    override suspend fun getEpisodes(page: Int?): List<EpisodeList> {
         return apolloClient
-            .query(EpisodesQuery())
+            .query(EpisodesQuery(Optional.present(page)))
             .execute()
             .data
             ?.episodes

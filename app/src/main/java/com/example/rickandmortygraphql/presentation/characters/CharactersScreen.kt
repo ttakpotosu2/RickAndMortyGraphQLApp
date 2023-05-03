@@ -6,6 +6,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
@@ -23,8 +24,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemContentType
+import androidx.paging.compose.itemKey
+import androidx.paging.compose.items
 import coil.compose.rememberAsyncImagePainter
 import com.example.rickandmortygraphql.domain.characters.CharacterList
+import com.example.rickandmortygraphql.presentation.LoadingItem
 import com.example.rickandmortygraphql.presentation.navigation.Screen
 
 @Composable
@@ -32,7 +39,7 @@ fun CharactersScreen(
     navController: NavHostController,
     charactersViewModel: CharactersViewModel = hiltViewModel()
 ) {
-    val characters = charactersViewModel.characters.collectAsState()
+    val characters = charactersViewModel.characters().collectAsLazyPagingItems()
 
     Column(
         modifier = Modifier
@@ -49,37 +56,30 @@ fun CharactersScreen(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
         )
-        when(characters.value){
-            is CharactersState.Loading ->{
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .size(100.dp)
-                        .padding(vertical = 200.dp)
-                        .align(Alignment.CenterHorizontally),
-                    color = Color.White
+        LazyColumn(
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .weight(1f)
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            contentPadding = PaddingValues(vertical = 16.dp)
+        ) {
+            items(
+                count = characters.itemCount,
+                key = characters.itemKey(),
+                contentType = characters.itemContentType(
                 )
-            }
-            is CharactersState.Success ->{
-                LazyColumn(
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .weight(1f)
-                        .fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    contentPadding = PaddingValues(vertical = 16.dp)
-                ){
-                    items(
-                        (characters.value as CharactersState.Success).characters
-                    ){ characters ->
-                        CharacterCard(
-                            characters = characters,
-                            onItemClick = {
-                                navController.navigate(
-                                    Screen.CharacterDetailScreen.route + "/${characters.id}"
-                                )
-                            }
-                        )
-                    }
+            ) { index ->
+                val item = characters[index]
+                if (item != null) {
+                    CharacterCard(
+                        characters = item,
+                        onItemClick = {
+                            navController.navigate(
+                                Screen.CharacterDetailScreen.route + "/${item.id}"
+                            )
+                        }
+                    )
                 }
             }
         }
@@ -108,7 +108,8 @@ fun CharacterCard(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(6.dp)
         ) {
-            Image(painter = imagePainter,
+            Image(
+                painter = imagePainter,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier

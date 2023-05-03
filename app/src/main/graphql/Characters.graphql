@@ -1,5 +1,5 @@
-query CharacterList {
-    characters {
+query CharacterList($page: Int) {
+    characters (page: $page) {
         results {
             id
             image

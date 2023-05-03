@@ -1,5 +1,5 @@
-query LocationList {
-    locations {
+query LocationList($page: Int) {
+    locations(page: $page){
         results {
             id
             name

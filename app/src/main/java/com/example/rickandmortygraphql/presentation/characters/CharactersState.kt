@@ -6,7 +6,7 @@ import com.example.rickandmortygraphql.domain.characters.CharacterList
 sealed class CharactersState {
     object Loading: CharactersState()
     data class Success(val characters: List<CharacterList>): CharactersState()
-//    class Error(val message: String? = null) : CharactersState()
+    class Error(val message: String? = null) : CharactersState()
 }
 
 sealed class CharacterState {
