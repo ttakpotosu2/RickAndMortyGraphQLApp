@@ -2,8 +2,6 @@ package com.example.rickandmortygraphql.data.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.example.rickandmortygraphql.domain.characters.CharacterClient
-import com.example.rickandmortygraphql.domain.characters.CharacterList
 import com.example.rickandmortygraphql.domain.locations.LocationClient
 import com.example.rickandmortygraphql.domain.locations.LocationsList
 
