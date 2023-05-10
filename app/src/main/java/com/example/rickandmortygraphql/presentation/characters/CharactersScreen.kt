@@ -10,7 +10,11 @@ import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -46,7 +50,18 @@ fun CharactersScreen(
             .fillMaxSize()
             .background(Color(0xFF121010))
     ) {
-        Spacer(modifier = Modifier.height(16.dp))
+        IconButton(
+            onClick = { navController.navigateUp() },
+            modifier = Modifier
+                .padding(16.dp)
+                .size(40.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.ArrowBack,
+                contentDescription = null,
+                tint = Color.White
+            )
+        }
         Text(
             text = "select a character",
             style = TextStyle(
@@ -80,6 +95,34 @@ fun CharactersScreen(
                             )
                         }
                     )
+                }
+            }
+            characters.apply {
+                when{
+                    loadState.refresh is LoadState.Loading -> {
+                        item {
+                            Column(
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier
+                                        .size(100.dp)
+                                        .padding(vertical = 200.dp),
+                                    color = Color.White
+                                )
+                            }
+
+                        }
+                    }
+                    loadState.append is LoadState.Loading -> {
+                        item { CircularProgressIndicator(
+                            modifier = Modifier
+                                .align(Alignment.CenterHorizontally),
+                            color = Color.White
+                        ) }
+                    }
                 }
             }
         }

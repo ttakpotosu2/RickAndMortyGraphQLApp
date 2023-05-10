@@ -9,7 +9,11 @@ import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -22,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
@@ -41,9 +46,21 @@ fun LocationsScreen(
             .fillMaxSize()
             .background(Color(0xFF121010))
     ) {
-        Spacer(modifier = Modifier.height(16.dp))
+      //  Spacer(modifier = Modifier.height(16.dp))
+        IconButton(
+            onClick = { navHostController.navigateUp() },
+            modifier = Modifier
+                .padding(16.dp)
+                .size(40.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.ArrowBack,
+                contentDescription = null,
+                tint = Color.White
+            )
+        }
         Text(
-            text = "where do you wanna go?",
+            text = "where do you want to go?",
             style = TextStyle(
                 fontSize = 70.sp,
                 color = Color.White
@@ -75,6 +92,34 @@ fun LocationsScreen(
                             )
                         }
                     )
+                }
+            }
+            location.apply {
+                when{
+                    loadState.refresh is LoadState.Loading -> {
+                        item {
+                            Column(
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier
+                                        .size(100.dp)
+                                        .padding(vertical = 200.dp),
+                                    color = Color.White
+                                )
+                            }
+
+                        }
+                    }
+                    loadState.append is LoadState.Loading -> {
+                        item { CircularProgressIndicator(
+                            modifier = Modifier
+                                .align(Alignment.CenterHorizontally),
+                            color = Color.White
+                        ) }
+                    }
                 }
             }
         }

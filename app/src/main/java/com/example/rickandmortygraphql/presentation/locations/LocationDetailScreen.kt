@@ -4,7 +4,11 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -15,6 +19,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -27,7 +32,7 @@ import com.google.accompanist.flowlayout.FlowRow
 @Composable
 fun LocationDetailScreen(
     navHostController: NavHostController,
-    viewModel: LocationViewModel = hiltViewModel(),
+    viewModel: LocationViewModel = hiltViewModel()
 ) {
     val location = viewModel.location.collectAsState()
     val scroll = rememberScrollState()
@@ -45,6 +50,17 @@ fun LocationDetailScreen(
                         .verticalScroll(scroll),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
+                    IconButton(
+                        onClick = { navHostController.navigateUp() },
+                        modifier = Modifier
+                            .size(40.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = null,
+                            tint = Color.White
+                        )
+                    }
                     (location.value as LocationState.Success).location?.name?.let {
                         Text(
                             text = it,
@@ -101,13 +117,18 @@ fun LocationDetailScreen(
                 Text(text = "This is an Error Message")
             }
             is LocationState.Loading -> {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .size(100.dp)
-                        .padding(vertical = 200.dp)
-                        .align(Alignment.CenterHorizontally),
-                    color = Color.White
-                )
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .size(100.dp)
+                            .padding(vertical = 200.dp),
+                        color = Color.White
+                    )
+                }
             }
         }
     }
@@ -130,6 +151,7 @@ fun LocationResidentsItem(
             shape = RoundedCornerShape(12.dp)
         )
         .padding(10.dp)
+        .width(100.dp)
         .clickable { onItemClick() }
     ){
         Image(painter = imagePainter,
@@ -143,7 +165,8 @@ fun LocationResidentsItem(
             Text(
                 text = it,
                 color = Color.White,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }
