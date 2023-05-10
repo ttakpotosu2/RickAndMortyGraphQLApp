@@ -1,8 +1,18 @@
 package com.example.rickandmortygraphql.presentation.episodes
 
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -18,7 +28,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -106,13 +115,15 @@ fun EpisodeDetailScreen(
                                         )
                                     }
                                 }
-                        }
+                            }
                     }
                 }
             }
+
             is EpisodeState.Error -> {
                 Text(text = "This is an Error Message")
             }
+
             is EpisodeState.Loading -> {
                 Column(
                     verticalArrangement = Arrangement.Center,
@@ -161,7 +172,6 @@ fun EpisodeDetailResidentsItem(
             Text(
                 text = it,
                 color = Color.White,
-                textAlign = TextAlign.Center,
                 overflow = TextOverflow.Ellipsis
             )
         }
