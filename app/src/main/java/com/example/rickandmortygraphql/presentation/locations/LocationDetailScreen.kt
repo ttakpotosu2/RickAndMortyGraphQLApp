@@ -133,8 +133,7 @@ fun LocationDetailScreen(
                 ) {
                     CircularProgressIndicator(
                         modifier = Modifier
-                            .size(100.dp)
-                            .padding(vertical = 200.dp),
+                            .size(100.dp),
                         color = Color.White
                     )
                 }
