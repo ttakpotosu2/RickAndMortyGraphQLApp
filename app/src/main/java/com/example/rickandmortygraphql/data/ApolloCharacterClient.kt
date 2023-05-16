@@ -24,6 +24,10 @@ class ApolloCharacterClient @Inject constructor(
                     id = characterList?.id.orEmpty(),
                     name = characterList?.name.orEmpty(),
                     image = characterList?.image.orEmpty(),
+                    status = characterList?.status.orEmpty(),
+                    species = characterList?.species.orEmpty(),
+                    gender = characterList?.gender.orEmpty(),
+                    episode = characterList?.episode as List<CharacterListQuery.Episode>
                 )
             } ?: emptyList()
     }

@@ -4,6 +4,12 @@ query CharacterList($page: Int) {
             id
             image
             name
+            status
+            species
+            gender
+            episode {
+                id
+            }
         }
     }
 }
