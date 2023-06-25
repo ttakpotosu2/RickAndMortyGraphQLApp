@@ -6,6 +6,7 @@ This app was built with the Graph QL api for Rick and Morty to help familiarize 
 2. Apollo Kotlin
 3. Room
 4. Paging 3
-5. Hilt
-6. Jetpack Compose
+5. Coil
+6. Hilt
+7. Jetpack Compose
 
